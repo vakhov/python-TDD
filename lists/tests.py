@@ -2,6 +2,10 @@ from lists.models import Item
 from django.test import TestCase
 
 
+# TODO: Уборка после выполнения ФТ
+# TODO: Удаление операторов time.sleep
+# TODO: Поддержка более чем одного списка!
+
 class HomePageTest(TestCase):
     """тест домашней страницы"""
 
@@ -12,8 +16,6 @@ class HomePageTest(TestCase):
 
     def test_can_save_a_POST_request(self):
         """тест: можно сохранить post-запрос"""
-        # TODO: Показывать несколько элементов в таблице
-        # TODO: Поддержка более чем одного списка!
         self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
