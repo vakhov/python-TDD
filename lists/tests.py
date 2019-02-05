@@ -2,8 +2,6 @@ from lists.models import Item
 from django.test import TestCase
 
 
-# TODO: Уборка после выполнения ФТ
-# TODO: Удаление операторов time.sleep
 # TODO: Поддержка более чем одного списка!
 # TODO: Скорректировать модель так, чтобы элементы были связаны с разными списками
 # TODO: Добавить уникальные URL для каждого списка...
@@ -29,23 +27,12 @@ class HomePageTest(TestCase):
         """тест: переадресует после post-запроса"""
         response = self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/trololo/')
 
     def test_only_saves_items_when_necessary(self):
         """тест: сохранять элементы, только когда нужно"""
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
-
-    def test_display_all_list_item(self):
-        """тест: отображает все элементы списка"""
-        # настройка
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-        # вызов програмного кода
-        response = self.client.get('/')
-        # проверка утверждения
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
 
 
 class ItemModelTest(TestCase):
@@ -68,3 +55,23 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
         self.assertEqual(second_saved_item.text, 'Item the second')
+
+
+class ListViewTest(TestCase):
+    """тест представления списка"""
+
+    def test_uses_list_template(self):
+        """тест: используется шаблон списка"""
+        response = self.client.get('/lists/trololo/')
+        self.assertTemplateUsed(response, 'lists/list.html')
+
+    def test_display_all_list_item(self):
+        """тест: отображает все элементы списка"""
+        # настройка
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        response = self.client.get('/lists/trololo/')
+
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')

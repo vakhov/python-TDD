@@ -80,7 +80,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Эдит интересно, запомнит ли сайт её список. Далее она видит, что
         # сайт сгенерировал для неё уникальный URL-адрес - об этом
         # выводится небольшой текст с объяснениями.
-        self.fail('Закончить тест!')
+        # self.fail('Закончить тест!')
 
         # Она посещает этот URL-адрес - её список попрежнему там.
 
@@ -104,7 +104,7 @@ class NewVisitorTest(LiveServerTestCase):
         ## Мы используем новый сеанс браузера, тем самым обеспечивая, чтобы никакая
         ## информация от Эдит не прошла через данные cookie и пр.
         self.browser.quit()
-        self.browser = webdriver.Firefox
+        self.browser = webdriver.Firefox()
 
         # Френсис посещает домашнюю страницу. Нет ни каких признаков списка Эдит
         self.browser.get(self.live_server_url)
