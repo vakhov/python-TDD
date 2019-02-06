@@ -18,7 +18,7 @@ class ListAndItemModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
         """тест сохранения и получения элемента списка"""
-        list_  = List()
+        list_ = List()
         list_.save()
 
         first_item = Item()
