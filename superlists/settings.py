@@ -25,7 +25,7 @@ SECRET_KEY = '+t)pusk7#^iz*pjp7^wz#$q8p5sci5%lzzc_qvo6u_t+v_*&2#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['superlists.ru', 'localhost']
 
 
 # Application definition
