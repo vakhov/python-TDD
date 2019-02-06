@@ -2,8 +2,7 @@ from lists.models import Item, List
 from django.test import TestCase
 
 
-# TODO: Добавить уникальные URL для каждого списка...
-# TODO: Добавить URL для создания нового элемента в с вующем списке посредством POST
+# TODO: Убрать дублирование в urls.py за счет рефакторизации
 
 class HomePageTest(TestCase):
     """тест домашней страницы"""
@@ -46,24 +45,30 @@ class ListAndItemModelTest(TestCase):
         self.assertEqual(second_saved_item.list, list_)
 
 
-class ListViewTest(TestCase):
+class NewListTest(TestCase):
     """тест представления списка"""
 
     def test_uses_list_template(self):
         """тест: используется шаблон списка"""
-        response = self.client.get('/lists/trololo/')
+        list_ = List.objects.create()
+        response = self.client.get(f'/lists/{list_.id}/')
         self.assertTemplateUsed(response, 'lists/list.html')
 
-    def test_display_all_list_item(self):
-        """тест: отображает все элементы списка"""
-        list_ = List.objects.create()
-        Item.objects.create(text='itemey 1', list=list_)
-        Item.objects.create(text='itemey 2', list=list_)
+    def test_displays_only_items_for_that_list(self):
+        """тест: отображаются элементы только для этого списка"""
+        correct_list = List.objects.create()
+        Item.objects.create(text='itemey 1', list=correct_list)
+        Item.objects.create(text='itemey 2', list=correct_list)
+        other_list = List.objects.create()
+        Item.objects.create(text='другой элемент списка 1', list=other_list)
+        Item.objects.create(text='другой элемент списка 2', list=other_list)
 
-        response = self.client.get('/lists/trololo/')
+        response = self.client.get(f'/lists/{correct_list.id}/')
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
+        self.assertNotContains(response, 'другой элемент списка 1')
+        self.assertNotContains(response, 'другой элемент списка 2')
 
     def test_can_save_a_POST_request(self):
         """тест: можно сохранить post-запрос"""
@@ -75,4 +80,43 @@ class ListViewTest(TestCase):
     def test_redirect_after_POST(self):
         """тест: переадресует после post-запроса"""
         response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
-        self.assertRedirects(response, '/lists/trololo/')
+        new_list = List.objects.first()
+        self.assertRedirects(response, f'/lists/{new_list.id}/')
+
+
+class NewItemTest(TestCase):
+    """тест нового элемента списка"""
+
+    def test_can_save_a_POST_request_to_an_existing_list(self):
+        """тест: можно сохранить post-запрос в существующий список"""
+        other_lisr = List.objects.create()
+        correct_list = List.objects.create()
+
+        self.client.post(
+            f'/lists/{correct_list.id}/add_item',
+            data={'item_text': 'A new item for an existing list'}
+        )
+
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new item for an existing list')
+        self.assertEqual(new_item.list, correct_list)
+
+    def test_redirects_to_list_view(self):
+        """тест: переадресация в представление списка"""
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+
+        response = self.client.post(
+            f'/lists/{correct_list.id}/add_item',
+            data={'item_text': 'A new item for an existing list'}
+        )
+
+        self.assertRedirects(response, f'/lists/{correct_list.id}/')
+
+    def test_passes_correct_list_to_template(self):
+        """тест: передаётся правильный шаблон списка"""
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        response = self.client.get(f'/lists/{correct_list.id}/')
+        self.assertEqual(response.context['list'], correct_list)
