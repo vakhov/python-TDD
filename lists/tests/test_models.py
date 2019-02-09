@@ -48,3 +48,8 @@ class ListAndItemModelTest(TestCase):
         #     self.fail('Метод save должен поднять исключение')
         # except ValidationError:
         #     pass
+
+    def test_get_absolute_url(self):
+        """тест: получен абсолютный url"""
+        list_ = List.objects.create()
+        self.assertEqual(list_.get_absolute_url(), f'/lists/{list_.id}/')
