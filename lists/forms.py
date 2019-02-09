@@ -22,7 +22,7 @@ class ItemForm(forms.models.ModelForm):
             'text': {'required': EMPTY_ITEM_ERROR}
         }
 
-    # item_text = forms.CharField(
+    # text = forms.CharField(
     #     widget=forms.fields.TextInput(attrs={
     #         'placeholder': 'Enter a to-do item',
     #         'class': 'form-control input-lg',
