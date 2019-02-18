@@ -20,7 +20,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         """демонтаж"""
         self.browser.quit()
 
-    def white_for_row_in_list_table(self, row_text):
+    def wait_for_row_in_list_table(self, row_text):
         """ожидать строку в таблице списка"""
         start_time = time.time()
         while True:
@@ -34,7 +34,7 @@ class FunctionalTest(StaticLiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
-    def white_for(self, fn):
+    def wait_for(self, fn):
         """ожидать"""
         start_time = time.time()
         while True:

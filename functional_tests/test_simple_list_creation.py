@@ -33,7 +33,7 @@ class NewVisitorTest(FunctionalTest):
         # содержит "1: Купить павлиньи перья" в качестве элемента списка
         input_box.send_keys(Keys.ENTER)
 
-        self.white_for_row_in_list_table('1: Купить павлиньи перья')
+        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
         # self.assertTrue(
         #     any(row.text == '1: Купить павлиньи перья' for row in rows),
         #     f"Новый элемент списка не появился в таблице. Содежимое было: \n{table.text}"
@@ -47,8 +47,8 @@ class NewVisitorTest(FunctionalTest):
         input_box.send_keys(Keys.ENTER)
 
         # Страница снова обновляется, и теперь показывает оба элемента её списка
-        self.white_for_row_in_list_table('1: Купить павлиньи перья')
-        self.white_for_row_in_list_table('2: Сделать мушку из павлиньих перьев')
+        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
+        self.wait_for_row_in_list_table('2: Сделать мушку из павлиньих перьев')
 
         # Эдит интересно, запомнит ли сайт её список. Далее она видит, что
         # сайт сгенерировал для неё уникальный URL-адрес - об этом
@@ -66,7 +66,7 @@ class NewVisitorTest(FunctionalTest):
         input_box = self.get_item_input_box()
         input_box.send_keys('Купить павлиньи перья')
         input_box.send_keys(Keys.ENTER)
-        self.white_for_row_in_list_table('1: Купить павлиньи перья')
+        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
 
         # Она замечает, что её списко имеет уникальный URL-адрес
         edith_list_url = self.browser.current_url
@@ -90,7 +90,7 @@ class NewVisitorTest(FunctionalTest):
         input_box = self.get_item_input_box()
         input_box.send_keys('Купить молоко')
         input_box.send_keys(Keys.ENTER)
-        self.white_for_row_in_list_table('1: Купить молоко')
+        self.wait_for_row_in_list_table('1: Купить молоко')
 
         # Френсис получает уникальный URL-адрес
         francis_list_url = self.browser.current_url
